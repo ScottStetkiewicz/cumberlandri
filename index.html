@@ -20,6 +20,9 @@
 <!-- Add jQuery -->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
+<script data-require="highcharts@4.1.7" data-semver="4.1.7" src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.7/highcharts.js"></script>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+
 </head> 
 
 <body>
@@ -217,6 +220,29 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
+
+var popup = L.popup().setContent('<p style="font-size:130%;"><b>Some Name</b></p><div id="container" style="min-width: 300px; height: 200px; margin: 0 auto">Loading...</div>');
+
+L.marker([41.98,-71.40]).addTo(map).bindPopup(popup);
+
+
+map.on('popupopen', function(e) {
+  $.ajax({
+      type: "GET",
+      url: "data.json"
+    })
+    .done(function(data) {
+      $('#container').highcharts({
+        chart: {height: 175, width: 295},
+        title: {text: ''},
+        series: data
+      });
+    });
+});
+
+map.on('popupclose', function(e){
+  $('#container').html("Loading...");
+});
 
 </script>
 </body> 
